@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book an Event</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1 style="text-align:center;">Book Your Event</h1>
+
+<div class="container">
+  <form id="bookingForm">
+<label for="surname">Surname:</label>
+<input type="text" id="surname" required />
+
+<label for="firstName">First Name:</label>
+<input type="text" id="firstName" required />
+
+<label for="phoneNumber">Phone Number:</label>
+<input type="tel" id="phoneNumber" required />
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" required />
+
+    <label for="eventType">Event Type:</label>
+    <select id="eventType" required>
+      <option value="">--Select--</option>
+      <option value="wedding">Wedding</option>
+      <option value="corporate">Corporate</option>
+      <option value="birthday">Birthday</option>
+      <option value="concert">Concert</option>
+      <option value="anniversary">Anniversary</option>
+      <option value="holy communion">Holy Communion</option>
+      <option value="post funeral">Post-Funeral</option>
+      <option value="other">Other</option>
+    </select>
+
+<div id="otherEventTypeContainer" style="display: none;">
+  <label for="otherEventType">Please specify:</label>
+  <input type="text" id="otherEventType" />
+</div>
+
+    <label for="event">Booking Type:</label>
+    <select id="event" required onchange="updatePrice()">
+      <option value="">--Select--</option>
+      <option value="full">Full day (12 hours)</option>
+      <option value="half">Half day (6 hours)</option>
+      <option value="hourly">Hourly</option>
+    </select>
+
+    <div id="hourlyInputContainer" style="display: none;">
+      <label for="hoursCount">Number of Hours:</label>
+      <select id="hoursCount">
+        <option value="">--Select Hours--</option>
+        <option value="1">1 Hour</option>
+        <option value="2">2 Hours</option>
+        <option value="3">3 Hours</option>
+        <option value="4">4 Hours</option>
+        <option value="5">5 Hours</option>
+        <option value="6">6 Hours</option>
+        <option value="7">7 Hours</option>
+        <option value="8">8 Hours</option>
+        <option value="9">9 Hours</option>
+        <option value="10">10 Hours</option>
+        <option value="11">11 Hours</option>
+        <option value="12">12 Hours</option>
+      </select>
+    </div>
+
+    <label for="date">Event Date:</label>
+    <input type="date" id="date" required />
+
+    <label for="startTime">Start Time:</label>
+    <select id="startTime" required>
+      <option value="">--Select Time--</option>
+      <option value="01:00">01:00</option>
+      <option value="02:00">02:00</option>
+      <option value="03:00">03:00</option>
+      <option value="04:00">04:00</option>
+      <option value="05:00">05:00</option>
+      <option value="06:00">06:00</option>
+      <option value="07:00">07:00</option>
+      <option value="08:00">08:00</option>
+      <option value="09:00">09:00</option>
+      <option value="10:00">10:00</option>
+      <option value="11:00">11:00</option>
+      <option value="12:00">12:00</option>
+      <option value="13:00">13:00</option>
+      <option value="14:00">14:00</option>
+      <option value="15:00">15:00</option>
+      <option value="16:00">16:00</option>
+      <option value="17:00">17:00</option>
+      <option value="18:00">18:00</option>
+      <option value="19:00">19:00</option>
+      <option value="20:00">20:00</option>
+      <option value="21:00">21:00</option>
+      <option value="22:00">22:00</option>
+      <option value="23:00">23:00</option>
+      <option value="00:00">00:00</option>
+    </select>
+
+<label for="endTime">End Time:</label>
+<input type="text" id="endTime" readonly />
+
+    <div id="priceDisplay" style="margin-top: 20px;">
+      <p><strong>Event Price:</strong> <span id="eventPrice">€0.00</span></p>
+    </div>
+<div style="margin-top: 15px; display: flex; align-items: center;">
+  <input type="checkbox" id="cateringService" name="cateringService" style="width: 16px; height: 16px; margin-right: 8px;" />
+  <label for="cateringService" style="cursor: pointer; user-select: none;">
+    I wish to avail catering/food service (Customer agent will contact you with more details)
+  </label>
+</div>
+
+    <button type="submit" style="margin-top: 20px;">Proceed to Payment</button>
+
+<p style="margin-top: 10px; font-size: 0.8em; color: #555; text-align:justify;">
+  Booking will be finalised after the payment realisation and signing the terms and conditions. Our customer agent will contact you.
+</p>
+  </form>
+</div>
+
+
+<!-- Firebase App (Core SDK) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<!-- Firebase Firestore -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // Replace with your actual config from Firebase Console > Project Settings
+  const firebaseConfig = {
+  apiKey: "AIzaSyDMM9w0BPEVhu-GnuL0_spwoH_Mkl2GmAE",
+  authDomain: "booking-f5070.firebaseapp.com",
+  projectId: "booking-f5070",
+  storageBucket: "booking-f5070.firebasestorage.app",
+  messagingSenderId: "201773212594",
+  appId: "1:201773212594:web:759d0c29fffb127e667aab"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+
+
+  <script src="script.js"></script>
+<script>
+  document.getElementById("eventType").addEventListener("change", function () {
+    const otherContainer = document.getElementById("otherEventTypeContainer");
+    if (this.value === "other") {
+      otherContainer.style.display = "block";
+    } else {
+      otherContainer.style.display = "none";
+    }
+  });
+</script>
+</body>
+</html>
