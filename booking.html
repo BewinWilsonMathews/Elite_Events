@@ -104,16 +104,16 @@
 <input type="text" id="endTime" readonly />
 
     <div id="priceDisplay" style="margin-top: 20px;">
-      <p><strong>Event Price:</strong> <span id="eventPrice">€0.00</span></p>
+      <p><strong>Expected Event Price:</strong> <span id="eventPrice">€0.00</span></p>
     </div>
-<div style="margin-top: 15px; display: flex; align-items: center;">
-  <input type="checkbox" id="cateringService" name="cateringService" style="width: 16px; height: 16px; margin-right: 8px;" />
-  <label for="cateringService" style="cursor: pointer; user-select: none;">
+<div style="margin-top: 15px;">
+  <label style="display: flex; align-items: center; cursor: pointer; user-select: none;">
+    <input type="checkbox" id="cateringService" name="cateringService" style="width: 16px; height: 16px; margin-right: 8px;" />
     I wish to avail catering/food service
   </label>
 </div>
 
-    <button type="submit" style="margin-top: 20px;">Proceed to Payment</button>
+    <button type="submit" style="margin-top: 20px;">Submit</button>
 
 <p style="margin-top: 10px; font-size: 0.8em; color: #555; text-align:justify;">
   Booking will be finalised after the payment realisation and signing the terms and conditions. Our customer agent will contact you.
@@ -140,6 +140,11 @@
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  emailjs.init("UHXb-rlhf5E7Ws_i4"); // ✅ Your actual public key is correct here
 </script>
 
 
