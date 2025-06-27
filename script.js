@@ -34,10 +34,10 @@ function updatePrice() {
 
   document.getElementById("eventPrice").textContent = `€${price.toFixed(2)}`;
 
-const priceDisplay = document.getElementById("priceDisplay");
-if (priceDisplay) {
-  priceDisplay.scrollIntoView({ behavior: "smooth" });
-}
+  const priceDisplay = document.getElementById("priceDisplay");
+  if (priceDisplay) {
+    priceDisplay.scrollIntoView({ behavior: "smooth" });
+  }
 
   // Update end time if start time and duration are valid
   if (startTime && duration > 0) {
@@ -55,17 +55,15 @@ function calculateEndTime(startTime, hoursToAdd) {
   startDate.setHours(startHour, startMin);
   startDate.setMinutes(0);
 
-  // Add the specified number of hours
   startDate.setHours(startDate.getHours() + hoursToAdd);
 
-  // Format to 24-hour time string like "23:00"
   const endHour = startDate.getHours().toString().padStart(2, "0");
   const endMin = startDate.getMinutes().toString().padStart(2, "0");
 
   return `${endHour}:${endMin}`;
 }
 
-
+// Form submission handler
 document.getElementById("bookingForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -92,36 +90,68 @@ document.getElementById("bookingForm").addEventListener("submit", function (e) {
   const startTime = document.getElementById("startTime").value;
   const endTime = document.getElementById("endTime").value;
   const priceText = document.getElementById("eventPrice").textContent;
+  const cateringService = document.getElementById("cateringService").checked ? "Yes" : "No";
 
-  db.collection("bookings").add({
+  const bookingData = {
     firstName,
     surname,
     phoneNumber,
     email,
     eventType: eventLabel,
-    bookingType: bookingLabel, // ✅ combined label
+    bookingType: bookingLabel,
     date,
     startTime,
     endTime,
     price: priceText,
+    cateringService,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  })
-  .then(() => {
-    alert(`Thank you ${firstName} ${surname}!\nYour booking has been recorded successfully.`);
-    document.getElementById("bookingForm").reset();
-    document.getElementById("eventPrice").textContent = "€0.00";
-    document.getElementById("hourlyInputContainer").style.display = "none";
-    document.getElementById("otherEventTypeContainer").style.display = "none";
-    document.getElementById("endTime").value = "";
-  })
-  .catch((error) => {
-    alert("Error saving booking: " + error.message);
-  });
+  };
+
+  db.collection("bookings").add(bookingData)
+    .then(() => {
+      alert(`Thank you ${firstName} ${surname}!\nYour booking has been recorded successfully.`);
+      document.getElementById("bookingForm").reset();
+      document.getElementById("eventPrice").textContent = "€0.00";
+      document.getElementById("hourlyInputContainer").style.display = "none";
+      document.getElementById("otherEventTypeContainer").style.display = "none";
+      document.getElementById("endTime").value = "";
+
+      const templateParams = {
+        to_email: email,
+        to_name: `${firstName} ${surname}`,
+        event_type: eventLabel,
+        booking_type: bookingLabel,
+        date,
+        start_time: startTime,
+        end_time: endTime,
+        price: priceText,
+        phone: phoneNumber,
+        catering_service: cateringService
+      };
+
+      // Send confirmation to customer
+      emailjs.send("service_fttp7ie", "template_1024so3", templateParams)
+        .then(() => console.log("Confirmation email sent to customer"))
+        .catch((error) => console.error("Customer email error:", error));
+
+      // Send notification to your business
+const teamParams = {
+  ...templateParams,
+  customer_email: templateParams.to_email, // ✅ keep customer's email for use in the message
+  to_email: "eliteeventsandcaterers@outlook.ie", // ✅ actual recipient (your team)
+  to_name: `${firstName} ${surname}`
+};
+
+      emailjs.send("service_fttp7ie", "template_id8umqi", teamParams)
+        .then(() => console.log("Internal confirmation sent"))
+        .catch((error) => console.error("Internal email error:", error));
+    })
+    .catch((error) => {
+      alert("Error saving booking: " + error.message);
+    });
 });
 
-
-
-// 💡 New addition for updating price when hours change
+// Auto update price and time on selection
 document.addEventListener("DOMContentLoaded", function () {
   const hoursDropdown = document.getElementById("hoursCount");
   const startTime = document.getElementById("startTime");
