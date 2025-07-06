@@ -1,35 +1,12 @@
 function updatePrice() {
-  const event = document.getElementById("event").value;
-  const hourlyContainer = document.getElementById("hourlyInputContainer");
   const startTime = document.getElementById("startTime").value;
-  const hoursInput = document.getElementById("hoursCount");
+  const hours = parseInt(document.getElementById("hoursCount").value) || 0;
+
   let price = 0;
-  let duration = 0;
+  let duration = hours;
 
-  // Show/hide hourly dropdown
-  if (event === "hourly") {
-    hourlyContainer.style.display = "block";
-  } else {
-    hourlyContainer.style.display = "none";
-  }
-
-  // Calculate price and duration
-  switch (event) {
-    case "full":
-      price = 1200;
-      duration = 12;
-      break;
-    case "half":
-      price = 700;
-      duration = 6;
-      break;
-    case "hourly":
-      const hours = parseInt(hoursInput.value) || 1;
-      price = 160 * hours;
-      duration = hours;
-      break;
-    default:
-      price = 0;
+  if (hours > 0) {
+    price = 90 * hours;
   }
 
   document.getElementById("eventPrice").textContent = `€${price.toFixed(2)}`;
@@ -39,7 +16,6 @@ function updatePrice() {
     priceDisplay.scrollIntoView({ behavior: "smooth" });
   }
 
-  // Update end time if start time and duration are valid
   if (startTime && duration > 0) {
     const endTime = calculateEndTime(startTime, duration);
     document.getElementById("endTime").value = endTime;
@@ -76,15 +52,9 @@ document.getElementById("bookingForm").addEventListener("submit", function (e) {
   const otherEventType = document.getElementById("otherEventType")?.value || "";
   const eventLabel = eventType === "other" ? `Other (${otherEventType})` : eventType;
 
-  const event = document.getElementById("event").value;
-  const hours = event === "hourly" ? parseInt(document.getElementById("hoursCount").value) || 1 : null;
-  const bookingLabel = event === "hourly"
-    ? `Hourly (${hours} hour${hours > 1 ? 's' : ''})`
-    : event === "full"
-      ? "Full day"
-      : event === "half"
-        ? "Half day"
-        : event;
+  const hours = parseInt(document.getElementById("hoursCount").value) || 0;
+const bookingLabel = `Hourly (${hours} hour${hours !== 1 ? 's' : ''})`;
+
 
   const date = document.getElementById("date").value;
   const startTime = document.getElementById("startTime").value;
@@ -98,7 +68,7 @@ document.getElementById("bookingForm").addEventListener("submit", function (e) {
     phoneNumber,
     email,
     eventType: eventLabel,
-    bookingType: bookingLabel,
+    durationHours: hours,
     date,
     startTime,
     endTime,
@@ -112,7 +82,6 @@ document.getElementById("bookingForm").addEventListener("submit", function (e) {
       alert(`Thank you ${firstName} ${surname}!\nYour booking has been recorded successfully.`);
       document.getElementById("bookingForm").reset();
       document.getElementById("eventPrice").textContent = "€0.00";
-      document.getElementById("hourlyInputContainer").style.display = "none";
       document.getElementById("otherEventTypeContainer").style.display = "none";
       document.getElementById("endTime").value = "";
 
@@ -120,7 +89,7 @@ document.getElementById("bookingForm").addEventListener("submit", function (e) {
         to_email: email,
         to_name: `${firstName} ${surname}`,
         event_type: eventLabel,
-        booking_type: bookingLabel,
+        durationHours: hours,
         date,
         start_time: startTime,
         end_time: endTime,
@@ -155,7 +124,6 @@ const teamParams = {
 document.addEventListener("DOMContentLoaded", function () {
   const hoursDropdown = document.getElementById("hoursCount");
   const startTime = document.getElementById("startTime");
-  const bookingType = document.getElementById("event");
 
   if (hoursDropdown) {
     hoursDropdown.addEventListener("change", updatePrice);
@@ -165,7 +133,4 @@ document.addEventListener("DOMContentLoaded", function () {
     startTime.addEventListener("change", updatePrice);
   }
 
-  if (bookingType) {
-    bookingType.addEventListener("change", updatePrice);
-  }
 });
