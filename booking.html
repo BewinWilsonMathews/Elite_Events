@@ -41,32 +41,23 @@
   <input type="text" id="otherEventType" />
 </div>
 
-    <label for="event">Booking Type:</label>
-    <select id="event" required onchange="updatePrice()">
-      <option value="">--Select--</option>
-      <option value="full">Full day (12 hours)</option>
-      <option value="half">Half day (6 hours)</option>
-      <option value="hourly">Hourly</option>
-    </select>
+<label for="hoursCount">Number of Hours:</label>
+<select id="hoursCount" required>
+  <option value="">--Select Hours--</option>
+  <option value="1">1 Hour</option>
+  <option value="2">2 Hours</option>
+  <option value="3">3 Hours</option>
+  <option value="4">4 Hours</option>
+  <option value="5">5 Hours</option>
+  <option value="6">6 Hours</option>
+  <option value="7">7 Hours</option>
+  <option value="8">8 Hours</option>
+  <option value="9">9 Hours</option>
+  <option value="10">10 Hours</option>
+  <option value="11">11 Hours</option>
+  <option value="12">12 Hours</option>
+</select>
 
-    <div id="hourlyInputContainer" style="display: none;">
-      <label for="hoursCount">Number of Hours:</label>
-      <select id="hoursCount">
-        <option value="">--Select Hours--</option>
-        <option value="1">1 Hour</option>
-        <option value="2">2 Hours</option>
-        <option value="3">3 Hours</option>
-        <option value="4">4 Hours</option>
-        <option value="5">5 Hours</option>
-        <option value="6">6 Hours</option>
-        <option value="7">7 Hours</option>
-        <option value="8">8 Hours</option>
-        <option value="9">9 Hours</option>
-        <option value="10">10 Hours</option>
-        <option value="11">11 Hours</option>
-        <option value="12">12 Hours</option>
-      </select>
-    </div>
 
     <label for="date">Event Date:</label>
     <input type="date" id="date" required />
